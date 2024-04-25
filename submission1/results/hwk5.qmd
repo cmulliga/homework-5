@@ -1,0 +1,167 @@
+---
+title: "Homework 5"
+subtitle: "Submission 1"
+author: Conor Mulligan
+format:
+  pdf:
+    output-file: "mulligan-c-hwk5-1"
+    output-ext:  "pdf"
+    header-includes:
+      - \usepackage{float}
+      - \floatplacement{table}{H}
+      - \usepackage{hyperref}
+
+---
+
+First submission of homework 5. 
+
+[Link to Github](https://github.com/cmulliga/homework-5)
+
+```{r}
+#| include: false
+
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, stringr, readxl, 
+               data.table, gdata, scales, kableExtra, modelsummary, fixest)
+```
+
+```{r}
+#| include: false
+#| eval: true
+ 
+load("C:/Users/ctmul/Emory_Files/ECON_470-1/homework-5/submission1/hw5_workspace.Rdata")
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 1. Plot the share of the adult population with direct purchase health insurance over time. <br>
+
+```{r}
+#| echo: false
+#| fig-cap: Direct Purchase Over Time
+
+direct.graph
+
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 2. Discuss the reduction in direct purchase health insurance in later years. Can you list a couple of policies that might have affected the success of the direct purchase insurance market? <br>
+
+Direct purchase plans experiencing a decline after 2016 may be attributed to many factors. Most significant is likely the repeal of the individual mandate under the Affordable Care Act (ACA) in 2017. This required the majority of Americans to have health insurance or face a penalty. The removal of this mandate eliminated a financial incentive for healthy individuals to purchase insurance. 
+
+\newpage 
+
+\vspace{.2in}
+\noindent 3. Plot the share of the adult population with Medicaid over time. <br>
+
+```{r}
+#| echo: false
+#| fig-cap: Medicaid Over Time
+
+medicaid.graph
+
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 4. Plot the share of uninsured over time, separately by states that expanded Medicaid in 2014 versus those that did not. Drop all states that expanded after 2014. <br>
+
+```{r}
+#| echo: false
+#| fig-cap: Medicaid Uinsured (2014)
+
+uninsured.graph
+
+
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 5. Calculate the average percent of uninsured individuals in 2012 and 2015, separately for expansion and non-expansion states. Present your results in a basic 2x2 DD table. <br>
+
+```{r} 
+#| echo: false
+#| warning: false
+#| tbl-cap: "Uninsured in 2012 and 2015"
+
+dd.table
+
+```
+
+Not coming out right (need to fix)
+
+\newpage 
+
+\vspace{.2in}
+\noindent 6. Estimate the effect of Medicaid expansion on the uninsurance rate using a standard DD regression estimator, again focusing only on states that expanded in 2014 versus those that never expanded. <br>
+
+```{r}
+#| echo: false
+#| warning: false
+#| tbl-cap: Effect of Medicaid Expansion on Uninsurance
+
+modelsummary(dd.reg)
+
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 7. Include state and year fixed effects in your estimates. Try using the lfe or fixest package to estimate this instead of directly including the fixed effects. <br>
+
+```{r}
+#| echo: false
+#| warning: false
+
+
+modelsummary(list("DD" = dd.reg2, "TWFE" = twfe))
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 8. Repeat the analysis in question 7 but include all states (even those that expanded after 2014). Are your results different? If so, why? <br>
+
+
+```{r}
+#| echo: false
+#| warning: false
+
+modelsummary(list("DD" = dd.reg3, "TWFE" = twfe2))
+```
+
+There is only very slight difference between this and the previous question.
+
+\newpage 
+
+\vspace{.2in}
+\noindent 9. Provide an “event study” graph showing the effects of Medicaid expansion in each year. Use the specification that includes state and year fixed effects, limited to states that expanded in 2014 or never expanded. <br>
+
+```{r}
+#| echo: false
+#| fig-cap: Event Study of Medicaid Expansion (2014)
+
+iplot(mod.twfe, 
+                   xlab = 'Time to Treatment',
+                   main = 'Event Study One')
+```
+
+\newpage 
+
+\vspace{.2in}
+\noindent 10. Repeat part 9 but again include states that expanded after 2014. Note: this is tricky…you need to put all states onto “event time” to create this graph. <br>
+
+
+```{r}
+#| echo: false
+#| fig-cap: Event Study of Medicaid Expansion over Time
+
+iplot(mod.twfe2, 
+                     xlab = 'Time to Treatment',
+                     main = 'Event Study Two')
+```
